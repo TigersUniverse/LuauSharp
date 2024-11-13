@@ -13,6 +13,8 @@ public unsafe class UserData : IDisposable
 
     internal UserData(Luau.lua_State* state) => this.state = state;
 
+    public static bool IsTypeAllowed(Type t) => staticClassCache.Count(x => x.Key.Item1 == t) > 0;
+
     private static Dictionary<string, int> GetStaticCacheFromExpandoObject(ExpandoObject expandoObject)
     {
         foreach (KeyValuePair<(Type, ExpandoObject),Dictionary<string,int>> keyValuePair in staticClassCache)
@@ -138,6 +140,11 @@ public unsafe class UserData : IDisposable
         {
             object value = values[i];
             ParameterInfo parameterInfo = parameters[i];
+            if (parameterInfo.ParameterType.IsEnum)
+            {
+                values[i] = Convert.ChangeType(value, TypeCode.Int32);
+                continue;
+            }
             if(!parameterInfo.ParameterType.IsPrimitive) continue;
             values[i] = Convert.ChangeType(value, parameterInfo.ParameterType);
         }
@@ -221,7 +228,6 @@ public unsafe class UserData : IDisposable
                 staticCache.Add("new", 2);
             }
         }
-        //TODO: Constants
         staticClassCache.Add((type, staticContainer), staticCache);
         PushObjectToLua<object>(staticContainer, type.Name);
     }
@@ -597,6 +603,11 @@ public unsafe class UserData : IDisposable
             return;
         }
         if (value == null) return;
+        if(!IsTypeAllowed(value.GetType()))
+        {
+            Luau.lua_pushnil(luaState);
+            return;
+        }
         GCHandle handle = GCHandle.Alloc(value);
         CacheHandle(ref typeHandles, ref handle);
         Luau.lua_pushlightuserdatatagged(luaState, GCHandle.ToIntPtr(handle), tag);

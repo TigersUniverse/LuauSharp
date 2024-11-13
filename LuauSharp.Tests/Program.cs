@@ -1,4 +1,6 @@
-﻿using LuauSharp;
+﻿using System.Numerics;
+using System.Reflection;
+using LuauSharp;
 
 const string CODE =
 """
@@ -34,6 +36,12 @@ testObject1:SetVersion(function()
 end)
 print(testObject1:GetNameAndVersion())
 TestClass:TestNull(nil, "yay!")
+print(TestClass.TEST_NAME)
+print("Is Valid 0: "..tostring(TestClass:IsValid(0)))
+print("Is Valid 1: "..tostring(TestClass:IsValid(TestEnum.Valid)))
+-- Uncomment Following Two Lines for exception
+--printdebug(testObject1:GetInfo())
+--printdebug(testObject1.Direction)
 """;
 
 TestClass globalTestClass = new TestClass
@@ -43,6 +51,7 @@ TestClass globalTestClass = new TestClass
 globalTestClass.SetVersion(0);
 
 using VM vm = new VM(Console.WriteLine, Console.WriteLine, Console.Error.WriteLine);
+vm.UserData.ForwardType<TestEnum>();
 vm.UserData.ForwardType<TestClass>();
 vm.UserData.PushFunction("t", () => globalTestClass);
 vm.UserData.PushFunction("printdebug", (Action<object>) (s => Console.WriteLine(s.GetType())));
@@ -57,6 +66,8 @@ vm.Execute();
 
 class TestClass
 {
+    public const string TEST_NAME = "test name!";
+    
     public static double Multiply = 1.5;
     public static int Divide { get; private set; } = 2;
 
@@ -88,4 +99,19 @@ class TestClass
         func.Call();
         func.Dispose();
     }
+
+    public static bool IsValid(TestEnum testEnum) => testEnum == TestEnum.Valid;
+    
+    // This section has not had their types forwarded; therefore, any references to them (Vector2 and FieldInfo) will be null
+    
+    public Vector2 Direction = Vector2.One;
+
+    public FieldInfo GetInfo() => typeof(TestClass).GetFields()[0];
+}
+
+public enum TestEnum
+{
+    Invalid = -1,
+    Waiting = 0x0,
+    Valid = 1
 }
