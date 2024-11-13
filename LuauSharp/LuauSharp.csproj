@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net7.0;netstandard2.1;net481</TargetFrameworks>
+        <LangVersion>11</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="libs\android_arm64-v8a\" />
+      <Folder Include="libs\linux_x64\" />
+      <Folder Include="libs\macOS_arm64\" />
+      <Folder Include="libs\macOS_x86-64\" />
+      <Folder Include="libs\win_x64\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="netstandard" Condition="'$(TargetFramework)' == 'net481'">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.NETCore.App\7.0.19\netstandard.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Net.Http" Condition="'$(TargetFramework)' == 'net481'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <DefineConstants>MSVC</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+        <DefineConstants>MAC</DefineConstants>
+    </PropertyGroup>
+
+</Project>

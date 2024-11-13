@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuauSharp", "LuauSharp\LuauSharp.csproj", "{2D2A5E5B-7485-4D61-8F34-3B7233096240}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuauSharp.Tests", "LuauSharp.Tests\LuauSharp.Tests.csproj", "{F179083B-19B9-4D9A-9FB9-1D17754C38CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D2A5E5B-7485-4D61-8F34-3B7233096240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2A5E5B-7485-4D61-8F34-3B7233096240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2A5E5B-7485-4D61-8F34-3B7233096240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2A5E5B-7485-4D61-8F34-3B7233096240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F179083B-19B9-4D9A-9FB9-1D17754C38CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F179083B-19B9-4D9A-9FB9-1D17754C38CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F179083B-19B9-4D9A-9FB9-1D17754C38CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F179083B-19B9-4D9A-9FB9-1D17754C38CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
