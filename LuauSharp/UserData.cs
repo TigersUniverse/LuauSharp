@@ -350,15 +350,16 @@ public unsafe class UserData : IDisposable
                 if (value == null) return 0;
                 if(value is Delegate delegateValue)
                 {
-                    Dictionary<string, int> staticCache = GetStaticCacheFromExpandoObject((ExpandoObject) obj);
+                    ExpandoObject expandoObject = (ExpandoObject) obj;
+                    Dictionary<string, int> staticCache = GetStaticCacheFromExpandoObject(expandoObject);
                     int scv = staticCache[(string) key];
                     if(scv == 2)
-                        Luau.lua_pushcclosurek(luaState, s => InvokeDelegateFromLua(s, delegateValue), memberName, 0, (_, _) => 0);
+                        Luau.lua_pushcclosurek(luaState, s => InvokeDelegateFromLua(s, delegateValue, expandoObject), memberName, 0, (_, _) => 0);
                     else
                     {
                         int p = Luau.lua_gettop(luaState);
                         if (p > 0)
-                            InvokeDelegateFromLua(luaState, delegateValue);
+                            InvokeDelegateFromLua(luaState, delegateValue, expandoObject);
                         else
                             delegateValue.DynamicInvoke(true, null);
                     }
@@ -533,12 +534,14 @@ public unsafe class UserData : IDisposable
         return 0;
     }
     
-    private int InvokeDelegateFromLua(Luau.lua_State* luaState, Delegate del)
+    private int InvokeDelegateFromLua(Luau.lua_State* luaState, Delegate del, ExpandoObject o)
     {
         int luaParameters = Luau.lua_gettop(luaState);
         List<object?> args = new List<object?>();
-        for (int i = 0; i < luaParameters - 1; i++)
-            args.Add(GetLuaValue(luaState, i + 2));
+        for (int i = 0; i < luaParameters; i++)
+            args.Add(GetLuaValue(luaState, i + 1));
+        // TODO: Correct indexing to avoid having to do this
+        args.RemoveAll(x => x == o);
         object? result = del.DynamicInvoke(true, args.ToArray());
         if (del.Method.ReturnType != typeof(void))
         {

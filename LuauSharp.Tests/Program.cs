@@ -10,9 +10,8 @@ print("I Like Turtles!")
 printdebug(TestClass)
 dict.K = 5
 print(dict["K"])
-local testObject1 = TestClass.new()
+local testObject1 = TestClass.new("this is my name!")
 local testObject2 = TestClass.new()
-testObject1.Name = "this is my name!"
 testObject1:SetVersion(2)
 print(testObject1:GetNameAndVersion())
 print("Before")
@@ -44,10 +43,7 @@ print("Is Valid 1: "..tostring(TestClass:IsValid(TestEnum.Valid)))
 --printdebug(testObject1.Direction)
 """;
 
-TestClass globalTestClass = new TestClass
-{
-    Name = "GLOBAL"
-};
+TestClass globalTestClass = new TestClass("GLOBAL");
 globalTestClass.SetVersion(0);
 
 using VM vm = new VM(Console.WriteLine, Console.WriteLine, Console.Error.WriteLine);
@@ -77,6 +73,9 @@ class TestClass
     
     public string Name;
     public int Version { get; private set; } = 1;
+    
+    public TestClass(){}
+    public TestClass(string name) => Name = name;
 
     public string GetNameAndVersion() => Name + Version;
 
